@@ -6,18 +6,38 @@
 package gui;
 
 import javax.swing.ComboBoxModel;
+import dao.*;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.Vector;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
  * @author ariel
  */
 public class form_Main extends javax.swing.JFrame {
+    
+    private String tabelaCmb;
+    private ResultSet resultSet;
+    
 
-    ComboBoxModel<String> tabelasBoxModel;
+    private ComboBoxModel<String> tabelasBoxModel;
+    private TableModel tableModel;
+    
+    //Instâncias
+    private dao.DAOGames daoGames = new DAOGames();
+    private DAOFornecedor daoFornecedor = new DAOFornecedor();
+    private DAOMarca daoMarca = new DAOMarca();
     
     public form_Main() {
         initComponents();
         
+        cmb_tabelasItemStateChanged(null);
     }
 
     /**
@@ -32,7 +52,7 @@ public class form_Main extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
-        jPanel2 = new javax.swing.JPanel();
+        jpa_ferramentas = new javax.swing.JPanel();
         cmb_tabelas = new javax.swing.JComboBox<>();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel2 = new javax.swing.JLabel();
@@ -42,7 +62,7 @@ public class form_Main extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tbl_tabela = new javax.swing.JTable();
         jSeparator3 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -75,6 +95,11 @@ public class form_Main extends javax.swing.JFrame {
         );
 
         cmb_tabelas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Games", "Fornecedores", "Marcas" }));
+        cmb_tabelas.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmb_tabelasItemStateChanged(evt);
+            }
+        });
 
         jLabel2.setText("Tabela");
 
@@ -89,13 +114,13 @@ public class form_Main extends javax.swing.JFrame {
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-clear-symbol-48.png"))); // NOI18N
         jButton2.setText("Remover");
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout jpa_ferramentasLayout = new javax.swing.GroupLayout(jpa_ferramentas);
+        jpa_ferramentas.setLayout(jpa_ferramentasLayout);
+        jpa_ferramentasLayout.setHorizontalGroup(
+            jpa_ferramentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpa_ferramentasLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(jpa_ferramentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jSeparator1)
                     .addComponent(btn_adicionar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
@@ -105,9 +130,9 @@ public class form_Main extends javax.swing.JFrame {
                     .addComponent(cmb_tabelas, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        jpa_ferramentasLayout.setVerticalGroup(
+            jpa_ferramentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpa_ferramentasLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -125,7 +150,7 @@ public class form_Main extends javax.swing.JFrame {
                 .addContainerGap(169, Short.MAX_VALUE))
         );
 
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tbl_tabela);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -148,7 +173,7 @@ public class form_Main extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 966, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jpa_ferramentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -161,13 +186,76 @@ public class form_Main extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jpa_ferramentas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jSeparator3)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
+    /**
+     * Evento com switch responsável por chamar o DAO correspondente de cada tabela
+     * @param evt 
+     * 
+     */
+    private void cmb_tabelasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_tabelasItemStateChanged
+        int indexCmb_tabelas = cmb_tabelas.getSelectedIndex();
+        tabelaCmb = cmb_tabelas.getItemAt(indexCmb_tabelas);
+        
+        switch(tabelaCmb){
+            case "Games":
+                resultSet = daoGames.getGamesResultSet();
+                break;
+            case "Fornecedores":
+                resultSet = daoFornecedor.getFornecedoresResultSet();
+                break;
+            case "Marcas":
+                resultSet = daoMarca.getMarcaResultSet();
+                break;
+        }
+        exibir();
+    }//GEN-LAST:event_cmb_tabelasItemStateChanged
 
+    
+    //MÉTODOS//
+    
+    private void exibir(){
+        try {
+            tableModel = buildTable(resultSet);
+            tbl_tabela.setModel(tableModel);
+            
+            //Redimensionar o Form
+            int tbl_width = tbl_tabela.getSize().width;
+            int panel_width = jpa_ferramentas.getSize().width;
+            
+        } catch (Exception e) {
+            MessageShow(e.getMessage());
+        }
+    }
+    
+    private static DefaultTableModel buildTable(ResultSet resultSet) throws SQLException {
+        ResultSetMetaData metaData = resultSet.getMetaData();
+        Vector<String> columnNames = new Vector<String>();
+        int columnCount = metaData.getColumnCount();
+        for (int column = 1; column <= columnCount; column++) {
+            columnNames.add(metaData.getColumnName(column));
+        }
+
+        // data of the table
+        Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+        while (resultSet.next()) {
+            Vector<Object> vector = new Vector<Object>();
+            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                vector.add(resultSet.getObject(columnIndex));
+            }
+            data.add(vector);
+        }
+        return new DefaultTableModel(data, columnNames);
+    }
+    
+    private void MessageShow(String text){
+        JOptionPane.showMessageDialog(this, text, "Mensagem", JOptionPane.INFORMATION_MESSAGE);
+    }
     /**
      * @param args the command line arguments
      */
@@ -212,12 +300,12 @@ public class form_Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JPanel jpa_ferramentas;
+    private javax.swing.JTable tbl_tabela;
     // End of variables declaration//GEN-END:variables
 }
