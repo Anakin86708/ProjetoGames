@@ -5,6 +5,7 @@
  */
 package gui;
 
+import com.sun.javafx.scene.layout.region.Margins;
 import javax.swing.ComboBoxModel;
 import dao.*;
 import java.sql.ResultSet;
@@ -19,11 +20,16 @@ import javax.swing.table.TableModel;
 /**
  *
  * @author ariel
+ * 
+ * TODO:
+ * Colocar valores a serem editados na classe correspondente; talvez utilizar um event da tabela?
  */
+
 public class form_Main extends javax.swing.JFrame {
     
     private String tabelaCmb;
     private ResultSet resultSet;
+    private int id, indexTbl;
     
 
     private ComboBoxModel<String> tabelasBoxModel;
@@ -58,8 +64,8 @@ public class form_Main extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         btn_adicionar = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        bnt_editar = new javax.swing.JButton();
+        btn_remover = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl_tabela = new javax.swing.JTable();
@@ -108,11 +114,16 @@ public class form_Main extends javax.swing.JFrame {
         btn_adicionar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-plus-24.png"))); // NOI18N
         btn_adicionar.setText("Adicionar");
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-edit-24.png"))); // NOI18N
-        jButton1.setText("Editar");
+        bnt_editar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-edit-24.png"))); // NOI18N
+        bnt_editar.setText("Editar");
+        bnt_editar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bnt_editarActionPerformed(evt);
+            }
+        });
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-clear-symbol-48.png"))); // NOI18N
-        jButton2.setText("Remover");
+        btn_remover.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-clear-symbol-48.png"))); // NOI18N
+        btn_remover.setText("Remover");
 
         javax.swing.GroupLayout jpa_ferramentasLayout = new javax.swing.GroupLayout(jpa_ferramentas);
         jpa_ferramentas.setLayout(jpa_ferramentasLayout);
@@ -125,8 +136,8 @@ public class form_Main extends javax.swing.JFrame {
                     .addComponent(btn_adicionar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btn_remover, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bnt_editar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(cmb_tabelas, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -144,9 +155,9 @@ public class form_Main extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btn_adicionar, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btn_remover, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(bnt_editar, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(169, Short.MAX_VALUE))
         );
 
@@ -216,6 +227,20 @@ public class form_Main extends javax.swing.JFrame {
         exibir();
     }//GEN-LAST:event_cmb_tabelasItemStateChanged
 
+    private void bnt_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnt_editarActionPerformed
+        
+        if (indexTbl != -1){
+            form_informacoes informacoes = new form_informacoes(tabelaCmb, "Editando");
+        
+        //ID do atual registro da tabela
+        id = (int) tbl_tabela.getValueAt(0, indexTbl);
+        
+        } else {
+            MessageShow("Selecione a linha na tabela que deseja editar!");
+        }
+        
+    }//GEN-LAST:event_bnt_editarActionPerformed
+
     
     //MÉTODOS//
     
@@ -232,6 +257,7 @@ public class form_Main extends javax.swing.JFrame {
             MessageShow(e.getMessage());
         }
     }
+    
     
     private static DefaultTableModel buildTable(ResultSet resultSet) throws SQLException {
         ResultSetMetaData metaData = resultSet.getMetaData();
@@ -292,10 +318,10 @@ public class form_Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bnt_editar;
     private javax.swing.JButton btn_adicionar;
+    private javax.swing.JButton btn_remover;
     private javax.swing.JComboBox<String> cmb_tabelas;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
