@@ -113,6 +113,11 @@ public class form_Main extends javax.swing.JFrame {
 
         btn_adicionar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-plus-24.png"))); // NOI18N
         btn_adicionar.setText("Adicionar");
+        btn_adicionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_adicionarActionPerformed(evt);
+            }
+        });
 
         bnt_editar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-edit-24.png"))); // NOI18N
         bnt_editar.setText("Editar");
@@ -241,6 +246,16 @@ public class form_Main extends javax.swing.JFrame {
         
     }//GEN-LAST:event_bnt_editarActionPerformed
 
+    private void btn_adicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_adicionarActionPerformed
+        try {
+            form_informacoes informacoes = new form_informacoes(tabelaCmb, "Novo");
+            informacoes.setVisible(true);
+            this.setVisible(false);
+        } catch (Exception e) {
+            MessageShow(e.getMessage());
+        }
+    }//GEN-LAST:event_btn_adicionarActionPerformed
+
     
     //MÉTODOS//
     
@@ -279,7 +294,7 @@ public class form_Main extends javax.swing.JFrame {
         return new DefaultTableModel(data, columnNames);
     }
     
-    private void MessageShow(String text){
+    public void MessageShow(String text){
         JOptionPane.showMessageDialog(this, text, "Mensagem", JOptionPane.INFORMATION_MESSAGE);
     }
     /**
