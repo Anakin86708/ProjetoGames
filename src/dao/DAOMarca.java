@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import model.Marca;
 
 /**
  *
@@ -22,6 +23,9 @@ private Connection connection;
     private PreparedStatement ps;
     private Statement statemant;
     private ResultSet resultSet;
+    
+    //Model
+    //model.Marca model = new model.Marca();
     
     public DAOMarca(){
         this.connection = new factory.Connection().getConnection();
@@ -41,5 +45,31 @@ private Connection connection;
         return resultSet;
     }
     
+    public int nextIdMarcaInt() {
+        try {
+            sqlString = "SHOW TABLE STATUS WHERE `Name` = 'marca'";
+            statemant = connection.prepareStatement(sqlString);
+            resultSet = statemant.executeQuery(sqlString);
+            resultSet.first();
+            return (Integer) resultSet.getInt("Auto_increment");
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+    
+    public String insertMarca(Marca marca) {
+        try {
+            sqlString = "INSERT INTO marca (marca, cidade, telefone, qtdGames) VALUES (?,?,?,?)";
+            ps = connection.prepareStatement(sqlString);
+            ps.setString(1, marca.getMarca());
+            ps.setString(2, marca.getCidade());
+            ps.setInt(3, marca.getTelefone());
+            ps.setInt(4, marca.getQtdGames());
+            ps.execute();
+            return "Sucesso!";
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
     
 }
