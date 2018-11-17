@@ -17,7 +17,13 @@ public class form_informacoes extends javax.swing.JFrame {
     private ResultSet resultSet;
     private String tabela, acao;
     
-    private form_Main main = new form_Main();
+    private form_Main formMain = new form_Main();
+    private dao.DAOMarca dAOMarca = new dao.DAOMarca();
+    
+    //Models
+    Marca marca = new Marca();
+    Games games = new Games();
+    Fornecedor fornecedor = new Fornecedor();
     
     public form_informacoes(String tabela, String acao) {
         initComponents();
@@ -27,6 +33,53 @@ public class form_informacoes extends javax.swing.JFrame {
         
         lbl_tabela.setText(this.tabela);
         lbl_acao.setText(this.acao);
+        
+        switch (this.tabela) {
+            case "Games":
+                lbl_1.setText("Código");
+                lbl_2.setText("Código de Barras");
+                lbl_3.setText("Código da Marca");
+                lbl_4.setText("Título");
+                lbl_5.setText("Plataforma");
+                lbl_6.setText("Idiomas");
+                lbl_7.setText("Faixa Etária");
+                lbl_8.setText("Conteúdo da Embalagem");
+                lbl_9.setText("Gênero");
+                lbl_10.setText("Código do Fornecedor");
+                lbl_11.setText("Preço");
+                lbl_12.setText("Avaliação");
+                break;
+            case "Fornecedores":
+                lbl_1.setText("Código do Fornecedor");
+                lbl_2.setText("Garantia");
+                lbl_3.setText("SAC");
+                lbl_4.setText("Cidade");
+                lbl_5.setText("CEO");
+                lbl_6.setText("Quantidade de Games");
+                lbl_7.setVisible(false); txt_7.setVisible(false);
+                lbl_8.setVisible(false); txt_8.setVisible(false);
+                lbl_9.setVisible(false); txt_9.setVisible(false);
+                lbl_10.setVisible(false); txt_10.setVisible(false);
+                lbl_11.setVisible(false); txt_11.setVisible(false);
+                lbl_12.setVisible(false); txt_12.setVisible(false);
+                break;
+            case "Marcas":
+                lbl_1.setText("Código da Marca");
+                lbl_2.setText("Marca");
+                lbl_3.setText("Cidade");
+                lbl_4.setText("Telefone");
+                lbl_5.setText("Quantidade de Games");
+                lbl_6.setVisible(false); txt_6.setVisible(false);
+                lbl_7.setVisible(false); txt_7.setVisible(false);
+                lbl_8.setVisible(false); txt_8.setVisible(false);
+                lbl_9.setVisible(false); txt_9.setVisible(false);
+                lbl_10.setVisible(false); txt_10.setVisible(false);
+                lbl_11.setVisible(false); txt_11.setVisible(false);
+                lbl_12.setVisible(false); txt_12.setVisible(false);
+                
+                txt_1.setText(String.valueOf(dAOMarca.nextIdMarcaInt()));
+                break;
+        }
     }
 
     /**
@@ -100,6 +153,11 @@ public class form_informacoes extends javax.swing.JFrame {
 
         btn_enviar.setBackground(new java.awt.Color(51, 204, 0));
         btn_enviar.setText("Enviar");
+        btn_enviar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_enviarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -138,6 +196,8 @@ public class form_informacoes extends javax.swing.JFrame {
         );
 
         lbl_1.setText("jLabel1");
+
+        txt_1.setEnabled(false);
 
         lbl_2.setText("jLabel1");
 
@@ -272,18 +332,45 @@ public class form_informacoes extends javax.swing.JFrame {
 
     private void btn_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelarActionPerformed
         this.setVisible(false);
-        main.setVisible(true);
+        formMain.setVisible(true);
     }//GEN-LAST:event_btn_cancelarActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         this.setVisible(false);
-        main.setVisible(true);
+        formMain.setVisible(true);
     }//GEN-LAST:event_formWindowClosing
+
+    private void btn_enviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_enviarActionPerformed
+        try {
+            switch (tabela) {
+                case "Marcas":
+                    marca.setMarca(txt_2.getText());
+                    marca.setCidade(txt_3.getText());
+                    marca.setTelefone(Integer.parseInt(txt_4.getText()));
+                    marca.setQtdGames(Integer.parseInt(txt_5.getText()));
+                    
+                    if (acao == "Novo"){
+                        formMain.MessageShow(dAOMarca.insertMarca(marca));
+                        btn_cancelarActionPerformed(evt);
+                    } else {
+                        //EDITAR - Marcas
+                    }
+                    break;
+                case "Games":
+                    
+                    break;
+                case "Fornecedores":
+                    break;
+            }
+        } catch (NumberFormatException numberFormatException) {
+            formMain.MessageShow(numberFormatException.getMessage());
+        }
+    }//GEN-LAST:event_btn_enviarActionPerformed
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -310,7 +397,7 @@ public class form_informacoes extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new form_informacoes().setVisible(true);
+                new form_informacoes(tabela, acao).setVisible(true);
             }
         });
     }
