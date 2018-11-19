@@ -12,7 +12,7 @@ package model;
 public class Games {
     private String titulo, plataforma, idiomas, faixa_etaria, conteudo_embalagem, genero;
     private int codigo, codigo_barras, codigo_marca, codigo_fornecedor;
-    private float preco, avaliacao;
+    private double preco, avaliacao;
 
     public String getTitulo() {
         return titulo;
@@ -66,48 +66,74 @@ public class Games {
         return codigo;
     }
 
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
+    public void setCodigo(String codigo) {
+        try {
+            this.codigo = Integer.parseInt(codigo);   
+        } catch (Exception e) {
+            this.codigo = 0;
+        }
     }
 
     public int getCodigo_barras() {
         return codigo_barras;
     }
 
-    public void setCodigo_barras(int codigo_barras) {
-        this.codigo_barras = codigo_barras;
+    public void setCodigo_barras(String codigo_barras) {
+        try {
+            this.codigo_barras = Integer.parseInt(codigo_barras);  
+        } catch (Exception e) {
+            this.codigo_barras = 0;
+        }
     }
 
     public int getCodigo_marca() {
         return codigo_marca;
     }
 
-    public void setCodigo_marca(int codigo_marca) {
-        this.codigo_marca = codigo_marca;
+    public void setCodigo_marca(String codigo_marca) {
+        try {
+            this.codigo_marca = Integer.parseInt(codigo_marca);     
+        } catch (Exception e) {
+            this.codigo_marca = 0;
+        }
     }
 
     public int getCodigo_fornecedor() {
         return codigo_fornecedor;
     }
 
-    public void setCodigo_fornecedor(int codigo_fornecedor) {
-        this.codigo_fornecedor = codigo_fornecedor;
+    public void setCodigo_fornecedor(String codigo_fornecedor) {
+        try {
+            this.codigo_fornecedor = Integer.parseInt(codigo_fornecedor);   
+        } catch (Exception e) {
+            this.codigo_fornecedor = 0;
+        }
     }
 
-    public float getPreco() {
+    public double getPreco() {
         return preco;
     }
 
-    public void setPreco(float preco) {
-        this.preco = preco;
+    public void setPreco(String preco) {
+        try {
+            preco = preco.replace(",", ".");
+            this.preco = Double.parseDouble(preco);   
+        } catch (Exception e) {
+            this.preco = 0.0;
+        }
     }
 
-    public float getAvaliacao() {
+    public double getAvaliacao() {
         return avaliacao;
     }
 
-    public void setAvaliacao(float avaliacao) {
-        this.avaliacao = avaliacao;
+    public void setAvaliacao(String avaliacao) {
+        try {
+            avaliacao = avaliacao.replace(",", ".");
+            this.avaliacao = Double.parseDouble(avaliacao);  
+        } catch (Exception e) {
+            this.avaliacao = 0.0;
+        }
     }
     
     
