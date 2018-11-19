@@ -5,6 +5,7 @@
  */
 package dao;
 
+import gui.form_Main;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,10 +23,7 @@ private Connection connection;
     private String sqlString;
     private PreparedStatement ps;
     private Statement statemant;
-    private ResultSet resultSet;
-    
-    //Model
-    //model.Marca model = new model.Marca();
+    private ResultSet resultSet;    
     
     public DAOMarca(){
         this.connection = new factory.Connection().getConnection();
@@ -67,6 +65,34 @@ private Connection connection;
             ps.setInt(4, marca.getQtdGames());
             ps.execute();
             return "Sucesso!";
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+    
+    public String updateMarca(Marca marca){
+        try {
+            sqlString = "UPDATE marca SET marca = ?, cidade = ?, telefone = ?, qtdGames = ? WHERE codigo_marca = ?";
+            ps = connection.prepareStatement(sqlString);
+            ps.setString(1, marca.getMarca());
+            ps.setString(2, marca.getCidade());
+            ps.setInt(3, marca.getTelefone());
+            ps.setInt(4, marca.getQtdGames());
+            ps.setInt(5, marca.getCodigo_marca());
+            ps.execute();
+            return "Sucesso!";
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+    
+    public String removeMarca(int id){
+        try {
+            sqlString = "DELETE FROM marca WHERE codigo_marca = ?";
+            ps = connection.prepareStatement(sqlString);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            return  "Sucesso!";
         } catch (Exception e) {
             return e.getMessage();
         }
