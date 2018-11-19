@@ -5,6 +5,7 @@
  */
 package dao;
 
+import gui.form_Main;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -53,21 +54,62 @@ public class DAOGames {
         }
     }
     
-    public String insertMarca(Games games) {
+    public String insertGames(Games games) {
         try {
-            sqlString = "INSERT INTO games (codigo_barras, codigo_marca, titulo, plataforma, idiomas, faixa_etaria, conteudo_fornecedor, genero, codigo_fornecedor, preco, avaliacao) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+            sqlString = "INSERT INTO games (codigo_barras, codigo_marca, titulo, plataforma, idiomas, faixa_etaria, conteudo_embalagem, genero, codigo_fornecedor, preco, avaliacao) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
             ps = connection.prepareStatement(sqlString);
-            //
-            //PAREI AQUI
-            //Pegar informações do model
-            //
-            ps.setString(1, marca.getMarca());
-            ps.setString(2, marca.getCidade());
-            ps.setInt(3, marca.getTelefone());
-            ps.setInt(4, marca.getQtdGames());
+            
+            ps.setInt(1, games.getCodigo_barras());
+            ps.setInt(2, games.getCodigo_marca());
+            ps.setString(3, games.getTitulo());
+            ps.setString(4, games.getPlataforma());
+            ps.setString(5, games.getIdiomas());
+            ps.setString(6, games.getFaixa_etaria());
+            ps.setString(7, games.getConteudo_embalagem());
+            ps.setString(8, games.getGenero());
+            ps.setInt(9, games.getCodigo_fornecedor());
+            ps.setDouble(10, games.getPreco());
+            ps.setDouble((11), games.getAvaliacao());
             ps.execute();
             return "Sucesso!";
         } catch (Exception e) {
             return e.getMessage();
         }
+    }
+    
+    public String updateGames(Games games) {
+        try {
+            sqlString = "UPDATE games SET codigo_barras = ?, codigo_marca = ?, titulo = ?, plataforma = ?, idiomas = ?, faixa_etaria = ?, conteudo_embalagem = ?, genero = ?, codigo_fornecedor = ?, preco = ?, avaliacao = ?  WHERE codigo = ?";
+            ps = connection.prepareStatement(sqlString);
+                    
+            ps.setInt(1, games.getCodigo_barras());
+            ps.setInt(2, games.getCodigo_marca());
+            ps.setString(3, games.getTitulo());
+            ps.setString(4, games.getPlataforma());
+            ps.setString(5, games.getIdiomas());
+            ps.setString(6, games.getFaixa_etaria());
+            ps.setString(7, games.getConteudo_embalagem());
+            ps.setString(8, games.getGenero());
+            ps.setInt(9, games.getCodigo_fornecedor());
+            ps.setDouble(10, games.getPreco());
+            ps.setDouble((11), games.getAvaliacao());
+            ps.setInt(12, games.getCodigo());
+            ps.executeUpdate();
+            return "Sucesso!";
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+    
+    public String removeGames(int id){
+        try {
+            sqlString = "DELETE FROM games WHERE codigo = ?";
+            ps = connection.prepareStatement(sqlString);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            return  "Sucesso!";
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
 }
