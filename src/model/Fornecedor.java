@@ -41,32 +41,48 @@ public class Fornecedor {
         return codigo_fornecedor;
     }
 
-    public void setCodigo_fornecedor(int codigo_fornecedor) {
-        this.codigo_fornecedor = codigo_fornecedor;
+    public void setCodigo_fornecedor(String codigo_fornecedor) {
+        try {
+            this.codigo_fornecedor = Integer.parseInt(codigo_fornecedor);
+        } catch (Exception e) {
+            this.codigo_fornecedor = 0;
+        }
     }
 
     public int getGarantia_fornecedor() {
         return garantia_fornecedor;
     }
 
-    public void setGarantia_fornecedor(int garantia_fornecedor) {
-        this.garantia_fornecedor = garantia_fornecedor;
+    public void setGarantia_fornecedor(String garantia_fornecedor) {
+        try {
+            this.garantia_fornecedor = Integer.parseInt(garantia_fornecedor);
+        } catch (Exception e) {
+            this.garantia_fornecedor = 0;
+        }
     }
 
     public int getSac() {
         return sac;
     }
 
-    public void setSac(int sac) {
-        this.sac = sac;
+    public void setSac(String sac) {
+        try {
+            this.sac = Integer.parseInt(sac);
+        } catch (Exception e) {
+            this.sac = 0;
+        }
     }
 
     public int getQtdGames() {
         return qtdGames;
     }
 
-    public void setQtdGames(int qtdGames) {
-        this.qtdGames = qtdGames;
+    public void setQtdGames(String qtdGames) {
+        try {
+            this.qtdGames = Integer.parseInt(qtdGames);
+        } catch (Exception e) {
+            this.qtdGames = 0;
+        }
     }
     
     
