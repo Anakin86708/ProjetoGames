@@ -6,6 +6,7 @@
 package gui;
 
 
+import dao.DAOFornecedor;
 import java.sql.ResultSet;
 import model.*;
 /**
@@ -14,11 +15,12 @@ import model.*;
  */
 public class form_informacoes extends javax.swing.JFrame {
 
-    private ResultSet resultSet;
     private String tabela, acao;
     
     private form_Main formMain = new form_Main();
     private dao.DAOMarca dAOMarca = new dao.DAOMarca();
+    private dao.DAOGames dAOGames = new dao.DAOGames();
+    private dao.DAOFornecedor dAOFornecedor = new DAOFornecedor();
     
     //Models
     Marca marca = new Marca();
@@ -37,31 +39,35 @@ public class form_informacoes extends javax.swing.JFrame {
         switch (this.tabela) {
             case "Games":
                 lbl_1.setText("Código");
-                lbl_2.setText("Código de Barras");
-                lbl_3.setText("Código da Marca");
+                lbl_2.setText("Código de Barras"); txt_2.setText("0");
+                lbl_3.setText("Código da Marca"); txt_3.setText("0");
                 lbl_4.setText("Título");
                 lbl_5.setText("Plataforma");
                 lbl_6.setText("Idiomas");
                 lbl_7.setText("Faixa Etária");
                 lbl_8.setText("Conteúdo da Embalagem");
                 lbl_9.setText("Gênero");
-                lbl_10.setText("Código do Fornecedor");
+                lbl_10.setText("Código do Fornecedor"); txt_10.setText("0");
                 lbl_11.setText("Preço");
                 lbl_12.setText("Avaliação");
+                
+                txt_1.setText(String.valueOf(dAOGames.nextIdGamesInt()));
                 break;
             case "Fornecedores":
                 lbl_1.setText("Código do Fornecedor");
-                lbl_2.setText("Garantia");
-                lbl_3.setText("SAC");
-                lbl_4.setText("Cidade");
-                lbl_5.setText("CEO");
-                lbl_6.setText("Quantidade de Games");
-                lbl_7.setVisible(false); txt_7.setVisible(false);
+                lbl_2.setText("Fornecedor");
+                lbl_3.setText("Garantia");
+                lbl_4.setText("SAC");
+                lbl_5.setText("Cidade");
+                lbl_6.setText("CEO");
+                lbl_7.setText("Quantidade de Games");
                 lbl_8.setVisible(false); txt_8.setVisible(false);
                 lbl_9.setVisible(false); txt_9.setVisible(false);
                 lbl_10.setVisible(false); txt_10.setVisible(false);
                 lbl_11.setVisible(false); txt_11.setVisible(false);
                 lbl_12.setVisible(false); txt_12.setVisible(false);
+                
+                txt_1.setText(String.valueOf(dAOFornecedor.nextIdFornecedorInt()));
                 break;
             case "Marcas":
                 lbl_1.setText("Código da Marca");
@@ -79,7 +85,9 @@ public class form_informacoes extends javax.swing.JFrame {
                 
                 txt_1.setText(String.valueOf(dAOMarca.nextIdMarcaInt()));
                 break;
+                
         }
+        
     }
 
     /**
@@ -332,7 +340,7 @@ public class form_informacoes extends javax.swing.JFrame {
 
     private void btn_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cancelarActionPerformed
         this.setVisible(false);
-        formMain.setVisible(true);
+        formMain.exibir();
     }//GEN-LAST:event_btn_cancelarActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -346,27 +354,92 @@ public class form_informacoes extends javax.swing.JFrame {
                 case "Marcas":
                     marca.setMarca(txt_2.getText());
                     marca.setCidade(txt_3.getText());
-                    marca.setTelefone(Integer.parseInt(txt_4.getText()));
-                    marca.setQtdGames(Integer.parseInt(txt_5.getText()));
+                    marca.setTelefone(txt_4.getText());
+                    marca.setQtdGames(txt_5.getText());
                     
                     if (acao == "Novo"){
                         formMain.MessageShow(dAOMarca.insertMarca(marca));
-                        btn_cancelarActionPerformed(evt);
                     } else {
-                        //EDITAR - Marcas
+                        formMain.MessageShow(dAOMarca.updateMarca(marca));
                     }
                     break;
                 case "Games":
+                    games.setCodigo_barras(txt_2.getText());
+                    games.setCodigo_marca(txt_3.getText());
+                    games.setTitulo(txt_4.getText());
+                    games.setPlataforma(txt_5.getText());
+                    games.setIdiomas(txt_6.getText());
+                    games.setFaixa_etaria(txt_7.getText());
+                    games.setConteudo_embalagem(txt_8.getText());
+                    games.setGenero(txt_9.getText());
+                    games.setCodigo_fornecedor(txt_10.getText());
+                    games.setPreco(txt_11.getText());
+                    games.setAvaliacao(txt_12.getText());
                     
+                    if(acao == "Novo"){
+                        formMain.MessageShow(dAOGames.insertGames(games));
+                    } else {
+                        formMain.MessageShow(dAOGames.updateGames(games));
+                    }                    
                     break;
                 case "Fornecedores":
+                    fornecedor.setFornecedor(txt_2.getText());
+                    fornecedor.setGarantia_fornecedor(txt_3.getText());
+                    fornecedor.setSac(txt_4.getText());
+                    fornecedor.setCidade(txt_5.getText());
+                    fornecedor.setCeo(txt_6.getText());
+                    fornecedor.setQtdGames(txt_7.getText());
+                    
+                    if(acao == "Novo"){
+                        formMain.MessageShow(dAOFornecedor.insertFornecedor(fornecedor));
+                    } else {
+                        formMain.MessageShow(dAOFornecedor.updateFornecedor(fornecedor));
+                    }
                     break;
             }
+            formMain.exibir();
+            btn_cancelarActionPerformed(evt);
         } catch (NumberFormatException numberFormatException) {
             formMain.MessageShow(numberFormatException.getMessage());
         }
     }//GEN-LAST:event_btn_enviarActionPerformed
 
+    public void editando(){
+        switch (this.tabela) {
+            case "Games":
+                txt_1.setText(String.valueOf(games.getCodigo()));
+                txt_2.setText(String.valueOf(games.getCodigo_barras()));
+                txt_3.setText(String.valueOf(games.getCodigo_marca()));
+                txt_4.setText(games.getTitulo());
+                txt_5.setText(games.getPlataforma());
+                txt_6.setText(games.getIdiomas());
+                txt_7.setText(games.getFaixa_etaria());
+                txt_8.setText(games.getConteudo_embalagem());
+                txt_9.setText(games.getGenero());
+                txt_10.setText(String.valueOf(games.getCodigo_fornecedor()));
+                txt_11.setText(String.valueOf(games.getPreco()));
+                txt_12.setText(String.valueOf(games.getAvaliacao()));
+
+                break;
+            case "Fornecedores":
+                txt_1.setText(String.valueOf(fornecedor.getCodigo_fornecedor()));
+                txt_2.setText(String.valueOf(fornecedor.getFornecedor()));
+                txt_3.setText(String.valueOf(fornecedor.getGarantia_fornecedor()));
+                txt_4.setText(String.valueOf(fornecedor.getSac()));
+                txt_5.setText(fornecedor.getCidade());
+                txt_6.setText(fornecedor.getCeo());
+                txt_7.setText(String.valueOf(fornecedor.getQtdGames()));
+                break;
+            case "Marcas":
+                txt_1.setText(String.valueOf(marca.getCodigo_marca()));
+                txt_2.setText(marca.getMarca());
+                txt_3.setText(marca.getCidade());
+                txt_4.setText(String.valueOf(marca.getTelefone()));
+                txt_5.setText(String.valueOf(marca.getQtdGames()));
+                break;
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
