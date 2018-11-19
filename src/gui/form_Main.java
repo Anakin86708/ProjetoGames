@@ -129,6 +129,11 @@ public class form_Main extends javax.swing.JFrame {
 
         btn_remover.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8-clear-symbol-48.png"))); // NOI18N
         btn_remover.setText("Remover");
+        btn_remover.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_removerActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpa_ferramentasLayout = new javax.swing.GroupLayout(jpa_ferramentas);
         jpa_ferramentas.setLayout(jpa_ferramentasLayout);
@@ -166,6 +171,11 @@ public class form_Main extends javax.swing.JFrame {
                 .addContainerGap(169, Short.MAX_VALUE))
         );
 
+        tbl_tabela.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbl_tabelaMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tbl_tabela);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -215,6 +225,106 @@ public class form_Main extends javax.swing.JFrame {
      * 
      */
     private void cmb_tabelasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_tabelasItemStateChanged
+        exibir();
+    }//GEN-LAST:event_cmb_tabelasItemStateChanged
+
+    private void bnt_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnt_editarActionPerformed
+        
+        try {
+            if (indexTbl != -1) {
+                form_informacoes informacoes = new form_informacoes(tabelaCmb, "Editando");
+                switch (tabelaCmb) {
+                    case "Games":
+                        informacoes.games.setCodigo(String.valueOf(tbl_tabela.getValueAt(indexTbl, 0)));
+                        informacoes.games.setCodigo_barras(String.valueOf(tbl_tabela.getValueAt(indexTbl, 1)));
+                        informacoes.games.setCodigo_marca(String.valueOf( tbl_tabela.getValueAt(indexTbl, 2)));
+                        informacoes.games.setTitulo(String.valueOf( tbl_tabela.getValueAt(indexTbl, 3)));
+                        informacoes.games.setPlataforma(String.valueOf( tbl_tabela.getValueAt(indexTbl, 4)));
+                        informacoes.games.setIdiomas(String.valueOf( tbl_tabela.getValueAt(indexTbl, 5)));
+                        informacoes.games.setFaixa_etaria(String.valueOf( tbl_tabela.getValueAt(indexTbl, 6)));
+                        informacoes.games.setConteudo_embalagem(String.valueOf( tbl_tabela.getValueAt(indexTbl, 7)));
+                        informacoes.games.setGenero(String.valueOf( tbl_tabela.getValueAt(indexTbl, 8)));
+                        informacoes.games.setCodigo_fornecedor(String.valueOf( tbl_tabela.getValueAt(indexTbl, 9)));
+                        informacoes.games.setPreco(String.valueOf( tbl_tabela.getValueAt(indexTbl, 10)));
+                        informacoes.games.setAvaliacao(String.valueOf( tbl_tabela.getValueAt(indexTbl, 11)));
+                        break;
+                    case "Fornecedores":
+                        informacoes.fornecedor.setCodigo_fornecedor(String.valueOf(tbl_tabela.getValueAt(indexTbl, 0)));
+                        informacoes.fornecedor.setFornecedor(String.valueOf(tbl_tabela.getValueAt(indexTbl, 1)));
+                        informacoes.fornecedor.setGarantia_fornecedor(String.valueOf(tbl_tabela.getValueAt(indexTbl, 2)));
+                        informacoes.fornecedor.setSac(String.valueOf(tbl_tabela.getValueAt(indexTbl, 3)));
+                        informacoes.fornecedor.setCidade(String.valueOf(tbl_tabela.getValueAt(indexTbl, 4)));
+                        informacoes.fornecedor.setCeo(String.valueOf(tbl_tabela.getValueAt(indexTbl, 5)));
+                        informacoes.fornecedor.setQtdGames(String.valueOf(tbl_tabela.getValueAt(indexTbl, 6)));
+                        break;
+                    case "Marcas":
+                        
+                        //As informações da marca não estão sendo exibidas corretamente no formulário ou sendo gravadas no model de forma errada
+                        //Talvez criar um método que receba um objeto para gravar no model
+                        informacoes.marca.setCodigo_marca(String.valueOf(tbl_tabela.getValueAt(indexTbl, 0)));
+                        informacoes.marca.setMarca(String.valueOf(tbl_tabela.getValueAt(indexTbl, 1)));
+                        informacoes.marca.setCidade(String.valueOf(tbl_tabela.getValueAt(indexTbl, 2)));
+                        informacoes.marca.setTelefone(String.valueOf(tbl_tabela.getValueAt(indexTbl, 3)));
+                        informacoes.marca.setQtdGames(String.valueOf(tbl_tabela.getValueAt(indexTbl, 4)));
+                        break;
+                }
+                
+                informacoes.editando();
+                informacoes.setVisible(true);
+                exibir();
+                
+            } else {
+                MessageShow("Selecione a linha na tabela que deseja editar!");
+            }
+        } catch (Exception e) {
+            MessageShow(e.getMessage());
+        }
+        
+    }//GEN-LAST:event_bnt_editarActionPerformed
+
+    private void btn_adicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_adicionarActionPerformed
+        try {
+            form_informacoes informacoes = new form_informacoes(tabelaCmb, "Novo");
+            informacoes.setVisible(true);
+            //this.setVisible(false);
+            exibir();
+        } catch (Exception e) {
+            MessageShow(e.getMessage());
+        }
+    }//GEN-LAST:event_btn_adicionarActionPerformed
+
+    private void btn_removerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_removerActionPerformed
+        try {
+            int dialog = JOptionPane.showConfirmDialog(this,"Deseja realmente remover este registro?", "Remover Permanentemente",DISPOSE_ON_CLOSE);
+        if (dialog == JOptionPane.YES_OPTION){
+            switch(tabelaCmb){
+                case "Games":
+                    MessageShow(daoGames.removeGames(id));
+                    break;
+                case "Fornecedores":
+                    MessageShow(daoFornecedor.removeFornecedor(id));
+                    break;
+                case "Marcas":
+                    MessageShow(daoMarca.removeMarca(id));
+                    break;
+            }
+        }
+        exibir();
+        } catch (Exception e) {
+            MessageShow(e.getMessage());
+        }
+    }//GEN-LAST:event_btn_removerActionPerformed
+
+    private void tbl_tabelaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_tabelaMouseClicked
+        //ID do atual registro da tabela
+        indexTbl = tbl_tabela.getSelectedRow();
+        id = (int) tbl_tabela.getValueAt(indexTbl, 0);
+    }//GEN-LAST:event_tbl_tabelaMouseClicked
+
+    
+    //MÉTODOS//
+    
+    public void exibir(){
         int indexCmb_tabelas = cmb_tabelas.getSelectedIndex();
         tabelaCmb = cmb_tabelas.getItemAt(indexCmb_tabelas);
         
@@ -229,37 +339,7 @@ public class form_Main extends javax.swing.JFrame {
                 resultSet = daoMarca.getMarcaResultSet();
                 break;
         }
-        exibir();
-    }//GEN-LAST:event_cmb_tabelasItemStateChanged
-
-    private void bnt_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnt_editarActionPerformed
         
-        if (indexTbl != -1){
-            form_informacoes informacoes = new form_informacoes(tabelaCmb, "Editando");
-        
-        //ID do atual registro da tabela
-        id = (int) tbl_tabela.getValueAt(0, indexTbl);
-        
-        } else {
-            MessageShow("Selecione a linha na tabela que deseja editar!");
-        }
-        
-    }//GEN-LAST:event_bnt_editarActionPerformed
-
-    private void btn_adicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_adicionarActionPerformed
-        try {
-            form_informacoes informacoes = new form_informacoes(tabelaCmb, "Novo");
-            informacoes.setVisible(true);
-            this.setVisible(false);
-        } catch (Exception e) {
-            MessageShow(e.getMessage());
-        }
-    }//GEN-LAST:event_btn_adicionarActionPerformed
-
-    
-    //MÉTODOS//
-    
-    private void exibir(){
         try {
             tableModel = buildTable(resultSet);
             tbl_tabela.setModel(tableModel);
@@ -273,6 +353,9 @@ public class form_Main extends javax.swing.JFrame {
         }
     }
     
+    public int getId(){
+        return this.id;
+    }
     
     private static DefaultTableModel buildTable(ResultSet resultSet) throws SQLException {
         ResultSetMetaData metaData = resultSet.getMetaData();
